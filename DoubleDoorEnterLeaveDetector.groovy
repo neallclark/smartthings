@@ -147,6 +147,13 @@ def onOutsideDoorOpenHandler(evt) {
 
 //No more event's handler to reset everything
 def onNoMoreEventsHandler(evt) {
-	resetTransitionFlags()
-    resetFinalOutput()
+	//If a door is still open then don't reset anything, just set the timer again
+    if(insideDoorState.currentValue("contact") == "open" || outsideDoorState.currentValue("contact") == "open") {
+        pushbackNoMoreEventsTimeout()
+    }
+    else {
+        resetTransitionFlags()
+        resetFinalOutput()
+        log.debug "Transition timed out, reseting everything"
+    }
 }
